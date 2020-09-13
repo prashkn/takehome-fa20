@@ -52,7 +52,14 @@ def mirror(name):
 
 @app.route("/restaurants", methods=['GET'])
 def get_all_restaurants():
-    return create_response({"restaurants": db.get('restaurants')})
+  restaurant = db.get('restaurant')
+  minRating = request.args.get('minRating')
+  restaurants_satisfied = []
+  if (restaurant.rating >= minRating):
+    restaurants_satisfied.append(restaurant)
+  if not restaurants_satisfied:
+    return create_response(status=404, message="There are no restaurants that fit this filter.")
+  return create_response({"restaurants": restaurants_satisfied})
 
 @app.route("/restaurants/<id>", methods=['DELETE'])
 def delete_restaurant(id):
@@ -61,9 +68,13 @@ def delete_restaurant(id):
     db.deleteById('restaurants', int(id))
     return create_response(message="Restaurant deleted")
 
-
 # TODO: Implement the rest of the API here!
-
+@app.route("/restaurants/<id>", methods=['GET'])
+def get_restaurant(id):
+  restaurant = db.getById('restaurants', int(id))
+  if restaurant is None:
+    return create_response(status=404, message="This restaurant does not exist")
+  return create_response(restaurant)
 """
 ~~~~~~~~~~~~ END API ~~~~~~~~~~~~
 """

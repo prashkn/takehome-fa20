@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import Instructions from './Instructions'
 import Restaurant from './Restaurant'
+import Counter from './Counter'
+import AddRestaurant from './AddRestaurant'
 
 class App extends Component {
   constructor(props) {
@@ -17,12 +19,19 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Instructions />
+        Current Count: <span><Counter count={0}/></span>
+        <Instructions complete={true}/>
         {this.state.restaurants.map(x => (
           <Restaurant id={x.id} name={x.name} rating={x.rating} />
         ))}
+        <hr />
+        <AddRestaurant />
+        <button onClick={inputValue => this.updateRestaurants(inputValue)}>Add</button>
       </div>
     )
+  }
+  updateRestaurants(newRestaurant){
+    this.setState((prevState) => ({restaurants: [...prevState.restaurants, newRestaurant]}))
   }
 }
 
